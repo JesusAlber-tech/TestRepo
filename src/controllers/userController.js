@@ -1,7 +1,7 @@
-let users = require('../models/userModel');
-let nextId = 1;
+const UserModel = require('../models/userModel'); // Import the UserModel class
 
 exports.getAllUsers = (req, res) => {
+    const users = UserModel.getAllUsers(); // Use the static method to get all users
     res.json(users);
 };
 
@@ -10,13 +10,12 @@ exports.createUser = (req, res) => {
     if (!name || !email) {
         return res.status(400).json({ error: 'Name and email are required' });
     }
-    const newUser = { id: nextId++, name, email };
-    users.push(newUser);
+    const newUser = UserModel.addUser({ name, email }); // Use the static method to add a user
     res.status(201).json(newUser);
 };
 
 exports.getUserById = (req, res) => {
-    const user = users.find(u => u.id === parseInt(req.params.id));
+    const user = UserModel.getUserById(parseInt(req.params.id)); // Use the static method to get a user by ID
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
@@ -25,23 +24,20 @@ exports.getUserById = (req, res) => {
 
 exports.updateUserById = (req, res) => {
     const { name, email } = req.body;
-    const user = users.find(u => u.id === parseInt(req.params.id));
-    if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-    }
     if (!name || !email) {
         return res.status(400).json({ error: 'Name and email are required' });
     }
-    user.name = name;
-    user.email = email;
-    res.json(user);
+    const updatedUser = UserModel.updateUserById(parseInt(req.params.id), { name, email }); // Use the static method to update a user
+    if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(updatedUser);
 };
 
 exports.deleteUserById = (req, res) => {
-    const userIndex = users.findIndex(u => u.id === parseInt(req.params.id));
-    if (userIndex === -1) {
+    const deletedUser = UserModel.deleteUserById(parseInt(req.params.id)); // Use the static method to delete a user
+    if (!deletedUser) {
         return res.status(404).json({ error: 'User not found' });
     }
-    users.splice(userIndex, 1);
     res.status(204).send();
 };

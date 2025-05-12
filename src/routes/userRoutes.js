@@ -4,13 +4,14 @@ const userController = require('../controllers/userController');
 const router = express.Router();
 
 function setUserRoutes(app) {
-    router.get('/users', userController.getAllUsers);
-    router.post('/users', userController.createUser);
-    router.get('/users/:id', userController.getUserById);
-    router.put('/users/:id', userController.updateUserById);
-    router.delete('/users/:id', userController.deleteUserById);
+    router.get('/', userController.getAllUsers);
+    router.post('/', userController.createUser);
+    router.get('/:id', userController.getUserById);
+    router.put('/:id', userController.updateUserById);
+    router.delete('/:id', userController.deleteUserById);
 
-    app.use('/api', router);
+    // Change the prefix to '/users'
+    app.use('/users', router);
 }
 
 module.exports = setUserRoutes;
